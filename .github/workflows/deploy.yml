@@ -1,0 +1,23 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy via Tencent Cloud TAT
+        env:
+          TENCENT_SECRET_ID: ${{ secrets.TENCENT_SECRET_ID }}
+          TENCENT_SECRET_KEY: ${{ secrets.TENCENT_SECRET_KEY }}
+          TENCENT_INSTANCE_ID: ${{ secrets.TENCENT_INSTANCE_ID }}
+          TENCENT_REGION: ${{ secrets.TENCENT_REGION }}
+        run: |
+          # Generate TC3-HMAC-SHA256 signature and call TAT API
+          python3 .github/scripts/tat_deploy.py
